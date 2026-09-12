@@ -35,6 +35,9 @@ flowchart LR
     C -->|Recordatorios programados| A
 ```
 
+<img width="848" height="1261" alt="image" src="https://github.com/user-attachments/assets/35ff7bde-e042-4423-a0b2-11bb4d92376d" />
+
+
 **Capas del sistema:**
 
 | Capa | Componente | Tecnología |
