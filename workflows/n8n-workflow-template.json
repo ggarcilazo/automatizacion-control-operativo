@@ -1,0 +1,81 @@
+{
+  "name": "Control Operativo - Registro de Actividades (PLANTILLA SANITIZADA)",
+  "meta": {
+    "nota": "Esta es una plantilla de referencia con la estructura general del flujo real (14 nodos), sin credenciales ni configuración específica de la empresa. Reemplaza los placeholders antes de importarla en una instancia de n8n."
+  },
+  "nodes": [
+    {
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "notes": "Escucha mensajes del bot. Requiere credencial de Telegram (NO incluida).",
+      "parameters": {
+        "updates": ["message", "callback_query"]
+      }
+    },
+    {
+      "name": "Leer Estado del Chat",
+      "type": "n8n-nodes-base.googleSheets",
+      "notes": "Lee la hoja 'Chat_Estados' para saber en qué paso quedó el colaborador.",
+      "parameters": {
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Chat_Estados",
+        "operation": "read"
+      }
+    },
+    {
+      "name": "Switch - Paso Actual",
+      "type": "n8n-nodes-base.switch",
+      "notes": "Enruta el flujo según el paso conversacional (selección de proyecto, registro de actividad, hora de fin, etc.)."
+    },
+    {
+      "name": "Validar Duración",
+      "type": "n8n-nodes-base.code",
+      "notes": "Código en src/validacion-duracion.js"
+    },
+    {
+      "name": "Clasificar con Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "Llama a la API de Gemini 1.5 Flash. Prompt en prompts/clasificador-actividades.md.",
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+        "authentication": "YOUR_API_KEY_CREDENTIAL"
+      }
+    },
+    {
+      "name": "Guardar en Registros",
+      "type": "n8n-nodes-base.googleSheets",
+      "notes": "Escribe el registro final en la hoja 'Registros'.",
+      "parameters": {
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Registros",
+        "operation": "append"
+      }
+    },
+    {
+      "name": "Actualizar Estado del Chat",
+      "type": "n8n-nodes-base.googleSheets",
+      "notes": "Actualiza 'Chat_Estados' con el nuevo paso del colaborador."
+    },
+    {
+      "name": "Responder al Colaborador",
+      "type": "n8n-nodes-base.telegram",
+      "notes": "Envía confirmación o siguiente pregunta del flujo conversacional."
+    },
+    {
+      "name": "Schedule Trigger - Recordatorios",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "notes": "Dispara en horarios clave de la jornada laboral."
+    },
+    {
+      "name": "Generar Resumen Diario",
+      "type": "n8n-nodes-base.code",
+      "notes": "Código en src/resumen-diario.js"
+    },
+    {
+      "name": "Enviar Resumen por Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "notes": "Envía el resumen del día al finalizar la sesión."
+    }
+  ],
+  "connections_nota": "Las conexiones entre nodos se omiten en esta plantilla; usa el diagrama docs/diagramas/05-workflow-n8n-actividades.png y docs/diagramas/06-workflow-n8n-recordatorios.png como referencia visual del flujo real."
+}

@@ -1,0 +1,19 @@
+# Credenciales y configuración sensible
+.env
+.env.*
+*credentials*.json
+n8n-export-real*.json
+ 
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+ 
+# Node (si en algún momento agregas scripts con dependencias)
+node_modules/
+npm-debug.log
+ 
+# Archivos temporales
+*.tmp
+*.log
