@@ -37,9 +37,8 @@ flowchart LR
 
 <img width="848" height="1261" alt="image" src="https://github.com/user-attachments/assets/35ff7bde-e042-4423-a0b2-11bb4d92376d" />
 
-
 **Capas del sistema:**
-
+ 
 | Capa | Componente | Tecnología |
 |---|---|---|
 | Interfaz conversacional | Bot de Telegram | Telegram Bot API |
@@ -50,13 +49,13 @@ flowchart LR
 | Infraestructura | Hosting | Oracle Cloud Always Free (Ubuntu 20.04) |
 | Exposición segura | Proxy inverso | Nginx + Certbot (SSL) |
 | Resolución de dominio | DNS dinámico | DuckDNS |
-
+ 
 ## 🧠 Metodología
-
+ 
 El proyecto se desarrolló bajo el **Modelo Incremental**, elegido frente a un Modelo Evolutivo porque los requerimientos ya estaban bien definidos desde el análisis inicial del proceso (no era necesario descubrirlos sobre la marcha), y porque el modelo permite entregar en cada incremento un producto parcial funcional, demostrable y validable ante la empresa.
-
+ 
 El desarrollo se organizó en **6 incrementos**:
-
+ 
 | Incremento | Entregable | Tecnologías |
 |---|---|---|
 | INC 1 | Google Sheets estructurado (Data Mart del sistema) | Google Sheets, Google Drive |
@@ -65,11 +64,47 @@ El desarrollo se organizó en **6 incrementos**:
 | INC 4 | Sistema de recordatorios automáticos | n8n Schedule Trigger, Telegram Bot API |
 | INC 5 | Dashboard BI con KPIs en Looker Studio | Looker Studio, Google Sheets |
 | INC 6 | Migración a Oracle Cloud, clasificación por IA (Gemini), pruebas y documentación | Oracle Cloud, Docker, Gemini API, Nginx, Certbot, DuckDNS |
-
+ 
 La arquitectura evolucionó de un despliegue local (Docker + ngrok) hacia un despliegue permanente en la nube (Oracle Cloud Always Free), lo que permitió que el sistema opere de forma continua sin depender del equipo del practicante.
-
+ 
+## 🖼️ Diagramas y evidencia
+ 
+**Proceso de negocio (AS-IS → TO-BE)**
+ 
+| Antes (manual) | Después (automatizado) |
+|---|---|
+| ![Proceso AS-IS](docs/diagramas/01-proceso-as-is.png) | ![Proceso TO-BE](docs/diagramas/02-proceso-to-be.png) |
+ 
+**Arquitectura tecnológica**
+ 
+| Despliegue local (desarrollo) | Despliegue en la nube (producción) |
+|---|---|
+| ![Arquitectura local](docs/diagramas/03-arquitectura-local.png) | ![Arquitectura cloud](docs/diagramas/04-arquitectura-cloud.png) |
+ 
+**Workflows de n8n**
+ 
+![Workflow de actividades](docs/diagramas/05-workflow-n8n-actividades.png)
+*Flujo principal (14 nodos): identifica la acción del colaborador y ejecuta la rama correspondiente.*
+ 
+![Workflow de recordatorios](docs/diagramas/06-workflow-n8n-recordatorios.png)
+*Flujo de recordatorios automáticos, disparado por horario (Schedule Trigger).*
+ 
+**Dashboard gerencial**
+ 
+![Dashboard Looker Studio](docs/diagramas/07-dashboard-looker-studio.png)
+*KPIs en tiempo real: total de actividades, tasa de resolución, distribución por estado, actividades por colaborador y por proyecto.*
+ 
+## 📊 Resultados
+ 
+- Bot en producción sobre Oracle Cloud Always Free, procesando registros en tiempo real sin intervención manual, con tiempo de respuesta ~1.2 s (por debajo del umbral de 3 s definido en RNF02)
+- Data Mart en Google Sheets (`Registros` + `Chat_Estados`) sin cambios de estructura desde el primer incremento, señal de que los requerimientos se definieron bien desde el inicio
+- Tiempo de consolidación de reportes reducido de 3–4 horas a prácticamente tiempo real (objetivo original: bajar a menos de 30 min — ampliamente superado)
+- Dashboard gerencial en uso activo por la gerencia; pendiente incorporar al tablero los indicadores de clasificación por IA (`Categoría IA`, `Es Incidencia`), que el sistema ya calcula y almacena
+- Validación práctica del Modelo Incremental: desde el INC3 (bot registrando actividad real) ya había valor entregado, sin esperar el sistema completo
+**Próximas mejoras identificadas:** extender el sistema a otras áreas del Departamento de Tecnología, completar las visualizaciones de clasificación por IA en el dashboard, y evaluar una versión más avanzada de Gemini para descripciones ambiguas.
+ 
 ## 📚 Documentación
-
+ 
 | Documento | Contenido |
 |---|---|
 | [`docs/Especificacion_de_Requisitos.docx`](docs/Especificacion_de_Requisitos.docx) | Requerimientos funcionales y no funcionales del sistema |
